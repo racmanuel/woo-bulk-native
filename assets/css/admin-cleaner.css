@@ -1,0 +1,9 @@
+#wcbt-dcc-stats,
+#wcbt-dcc-progress,
+#wcbt-dcc-result {
+	display: none;
+}
+
+#wcbt-dcc-actions {
+	margin-top: 20px;
+}
