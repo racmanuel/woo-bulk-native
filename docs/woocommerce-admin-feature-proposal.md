@@ -2,12 +2,13 @@
 
 ## Summary
 
-This proposal suggests improving search and filtering in the WooCommerce product administration interface:
+This proposal suggests improving two WooCommerce product administration workflows:
 
 1. Add search fields to category, brand, tag, and other taxonomy checklists.
 2. Add search to the list of products selected for bulk editing.
+3. Add a tool for cleaning the default WooCommerce product category.
 
-Both features would make daily catalog management easier without changing product data or altering the existing editing workflows.
+These features would make daily catalog management easier and provide a controlled way to correct category assignments.
 
 ## Problem
 
@@ -30,6 +31,12 @@ This is especially noticeable with:
 Bulk Edit displays selected products in its own list. When many products are selected, reviewing the list or confirming whether a specific product is included requires manual scrolling.
 
 The list should allow administrators to filter selected products by name without changing the actual selection or interfering with the native remove controls.
+
+### WooCommerce default category
+
+WooCommerce assigns a default category to products. Over time, that category may remain assigned alongside more specific categories even when it is no longer needed for those products.
+
+Cleaning this category manually requires reviewing products one by one and checking that each product keeps at least one other category. Administrators need a tool that can simulate the operation before changing data and process products in a controlled way.
 
 ## Proposed Features
 
@@ -67,6 +74,24 @@ The search should:
 
 This filter should be local and should not require an AJAX request or a new catalog-wide query.
 
+### 3. Default category cleaner
+
+Add a product-admin tool that removes the default WooCommerce category from simple products that also have other categories assigned.
+
+The tool should:
+
+- Detect and display the default category configured in WooCommerce.
+- Simulate the operation before making changes.
+- Report how many products have the default category.
+- Report how many products can be cleaned and how many will remain unchanged.
+- Process cleanable products in batches.
+- Display processing progress and results.
+- Skip products that do not have another assigned category.
+- Never leave a product without a category.
+- Require WooCommerce administration capabilities and explicit confirmation.
+
+Processing should invalidate affected term caches and handle errors for individual batches correctly.
+
 ## Why This Belongs in WooCommerce Core
 
 ### Common administrative workflow
@@ -83,7 +108,11 @@ A native implementation would provide the same experience across WooCommerce sto
 
 ### Low implementation risk
 
-These improvements are limited to the admin interface. They do not require changes to product storage, checkout, orders, or public templates.
+These improvements are limited to the admin interface and controlled catalog-maintenance tasks. They do not require changes to checkout, orders, or public templates.
+
+### Safer catalog maintenance
+
+The cleaner avoids an unchecked destructive operation by using a simulation, confirmation, and batch processing. Its rule of preserving products without additional categories reduces the risk of leaving products uncategorized.
 
 ### Extension compatibility
 
@@ -109,12 +138,24 @@ The search can operate on the elements already rendered in the page. Extensions 
 5. The actual selection remains unchanged.
 6. Clearing the search restores all selected products.
 
+### Default category cleaner
+
+1. The administrator opens the tool from the Products menu.
+2. The screen displays the detected default category.
+3. The administrator runs a simulation.
+4. The screen reports the products found, the products that can be cleaned, and the products that will remain unchanged.
+5. The administrator confirms the operation.
+6. The tool processes cleanable products in batches and displays progress.
+7. When complete, the tool displays processed, modified, and skipped totals.
+
 ## Accessibility Requirements
 
 - Each search field must have an accessible label.
 - Clear-search buttons must be keyboard accessible.
 - Empty states must be announced through an appropriate status message.
 - Focus should remain predictable when a filter is cleared.
+- The cleaner's simulation and confirmation must clearly explain the changes that will be made.
+- The cleaner's progress and final result must be communicated clearly.
 - The interface must not rely on color alone to communicate results.
 - All text must be translatable.
 
@@ -126,6 +167,9 @@ The search can operate on the elements already rendered in the page. Extensions 
 - Searching must not modify product data.
 - Existing WooCommerce permissions and security controls must remain unchanged.
 - Delegated events should support edit rows rebuilt dynamically by WordPress.
+- Cleaner actions must be protected by WordPress capabilities and a nonce.
+- The cleaner should process changes in batches to limit memory use and execution time.
+- The default category should only be removed when the product keeps at least one other category.
 
 ## Scope
 
@@ -134,8 +178,10 @@ This proposal covers:
 - Taxonomy search in Quick Edit.
 - Taxonomy search in Bulk Edit.
 - Search within the products selected for Bulk Edit.
+- Controlled cleanup of the default WooCommerce category.
 - Hierarchical, non-hierarchical, and custom product taxonomies.
 - Empty states, clear actions, accessibility, and localization.
+- Cleaner simulation, confirmation, batch processing, and results.
 
 ## Prototype Evidence
 
@@ -147,6 +193,8 @@ A working prototype has been implemented as an independent admin plugin. It demo
 - Empty states when a search has no matches.
 - Clearing the search without changing selected values.
 - Delegated events that continue working when WordPress rebuilds edit rows.
+- Simulation and batch cleanup of the default category for simple products.
+- Protection for products that only have the default category assigned.
 
 The prototype can help maintainers review the interaction and edge cases before selecting the final native WooCommerce implementation.
 
@@ -164,6 +212,9 @@ The prototype can help maintainers review the interaction and edge cases before 
 > **Screenshot 4: Empty state and clear action**  
 > Replace this block with an image showing the no-results message and the restored list after clearing the search.
 
+> **Screenshot 5: Cleaner simulation and progress**
+> Replace this block with an image showing the detected category, simulation results, and batch-processing progress.
+
 ## Acceptance Criteria
 
 - Taxonomy checklists provide a search field in Quick Edit and Bulk Edit.
@@ -176,6 +227,12 @@ The prototype can help maintainers review the interaction and edge cases before 
 - Filtering selected products does not remove or change the actual selection.
 - Native product removal buttons continue to work.
 - Filters continue working after WordPress creates or replaces an edit row.
+- The cleaner detects the default category configured in WooCommerce.
+- The simulation distinguishes cleanable products from products that remain unchanged.
+- Only simple products with the default category and at least one additional category are processed.
+- The cleaner processes products in batches and displays progress and final results.
+- The operation requires appropriate capabilities, a nonce, and explicit confirmation.
+- No product is left without a category as a result of the cleanup.
 - The interface is keyboard accessible and fully translatable.
 - Normal use does not add catalog-wide queries.
 
@@ -186,9 +243,11 @@ The prototype can help maintainers review the interaction and edge cases before 
 3. What hierarchical behavior should be preferred when a parent or child term matches?
 4. Should selected-product search filter by product name only, or also by SKU?
 5. Is there a recommended event or API for extensions that rebuild taxonomy checklists?
+6. Should the cleaner offer an option to select a target category before removing the default category?
+7. Should administrators be able to review or export the list of products that remain unchanged?
 
 ## Conclusion
 
-Taxonomy search and selected-product search are small, focused improvements that would make large WooCommerce catalogs clearer and more efficient to manage. They preserve current behavior, require no frontend changes, and do not modify product data while searching.
+Taxonomy search, selected-product search, and controlled default-category cleanup are focused improvements for managing large WooCommerce catalogs. Searches do not modify data, while the cleaner applies changes only after simulation, confirmation, and validation of additional categories.
 
 The independent prototype can provide a starting point for reviewing the interaction and determining the most appropriate native WooCommerce implementation.

@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       WC Bulk Edit & Category Tools
  * Plugin URI:        https://github.com/rcmanuel/wc-bulk-tools
- * Description:       Herramientas nativas para WooCommerce: buscador en los checklists de taxonomías (categorías, marcas, etc.) de la edición rápida y masiva, y limpiador de la categoría por defecto en productos simples.
+ * Description:       Native WooCommerce tools: taxonomy checklist search (categories, brands, etc.) in Quick Edit and Bulk Edit, plus a default category cleaner for simple products.
  * Version:           1.0.2
  * Author:            rcmanuel
  * Author URI:        https://github.com/rcmanuel
@@ -32,7 +32,7 @@ define( 'WC_BULK_TOOLS_URL', plugin_dir_url( __FILE__ ) );
 require_once WC_BULK_TOOLS_PATH . 'includes/class-wc-bulk-tools.php';
 
 /**
- * Devuelve la instancia principal del plugin.
+ * Returns the plugin's main instance.
  *
  * @return WC_Bulk_Tools
  */
@@ -43,7 +43,7 @@ function wc_bulk_tools() {
 wc_bulk_tools();
 
 /**
- * Declara compatibilidad con High-Performance Order Storage (HPOS).
+ * Declares compatibility with High-Performance Order Storage (HPOS).
  *
  * @return void
  */

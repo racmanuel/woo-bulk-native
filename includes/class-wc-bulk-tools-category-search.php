@@ -1,6 +1,6 @@
 <?php
 /**
- * Buscadores para la edición rápida y masiva de productos.
+ * Search tools for product Quick Edit and Bulk Edit.
  *
  * @package WC_Bulk_Tools
  */
@@ -10,20 +10,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Añade filtros de búsqueda a los checklists de taxonomías y a la lista de
- * productos seleccionados que WooCommerce muestra en la edición rápida y masiva.
+ * Adds search filters to the taxonomy checklists and selected-product list
+ * displayed by WooCommerce in Quick Edit and Bulk Edit.
  */
 final class WC_Bulk_Tools_Category_Search {
 
 	/**
-	 * Instancia única.
+	 * Singleton instance.
 	 *
 	 * @var WC_Bulk_Tools_Category_Search|null
 	 */
 	protected static $instance = null;
 
 	/**
-	 * Devuelve la instancia única.
+	 * Returns the singleton instance.
 	 *
 	 * @return WC_Bulk_Tools_Category_Search
 	 */
@@ -36,12 +36,12 @@ final class WC_Bulk_Tools_Category_Search {
 	}
 
 	/**
-	 * Constructor privado.
+	 * Private constructor.
 	 */
 	private function __construct() {}
 
 	/**
-	 * Registra los hooks de la funcionalidad.
+	 * Registers the feature hooks.
 	 *
 	 * @return void
 	 */
@@ -50,9 +50,9 @@ final class WC_Bulk_Tools_Category_Search {
 	}
 
 	/**
-	 * Encola estilos y scripts solo en el listado de productos.
+	 * Enqueues styles and scripts only on the product list.
 	 *
-	 * @param string $hook_suffix Hook de la pantalla actual.
+	 * @param string $hook_suffix Current screen hook suffix.
 	 * @return void
 	 */
 	public function enqueue_assets( $hook_suffix ) {

@@ -37,8 +37,8 @@
 	}
 
 	/**
-	 * Devuelve el checklist asociado a un contenedor, calculado siempre desde
-	 * el DOM actual (nunca desde referencias capturadas al construir la UI).
+	 * Returns the checklist associated with a wrapper, always resolved from the
+	 * current DOM (never from references captured while building the UI).
 	 */
 	function getChecklist( $wrap ) {
 		return $wrap.next( SELECTOR ).first();
@@ -136,7 +136,7 @@
 	}
 
 	function buildUI( $checklist ) {
-		// Solo se omite si este checklist ya tiene su propio contenedor.
+		// Skip only when this checklist already has its own wrapper.
 		if ( $checklist.prev( '.' + WRAP_CLASS ).length ) {
 			return;
 		}
@@ -154,8 +154,8 @@
 			placeholder: placeholder,
 			spellcheck: false
 		} );
-		// Importante: no pasar `autocomplete: 'off'` en el objeto anterior porque
-		// jQuery lo trata como una llamada a método si jQuery UI Autocomplete está cargado.
+		// Do not pass `autocomplete: 'off'` in the object above because jQuery
+		// treats it as a method call when jQuery UI Autocomplete is loaded.
 		$input.attr( 'autocomplete', 'off' );
 
 		var $clear = $( '<button />', {
@@ -293,11 +293,11 @@
 	function init() {
 		buildAll();
 
-		// Handlers delegados en `document`: imprescindibles porque WordPress y
-		// WooCommerce clonan filas completas del listado (y jQuery.clone copia los
-		// handlers directos, dejando clausuras que apuntan a nodos que ya no son
-		// los que el usuario está editando). Con delegación siempre se resuelve el
-		// input y su checklist desde el DOM actual.
+		// Delegate handlers from `document`: this is required because WordPress and
+		// WooCommerce clone complete list rows (and jQuery.clone copies direct
+		// handlers, leaving closures pointing to nodes that are no longer being
+		// edited). Delegation always resolves the input and its checklist from the
+		// current DOM.
 		$( document ).on( 'input', '.' + INPUT_CLASS, function() {
 			scheduleFilter( $( this ) );
 		} );
@@ -335,13 +335,13 @@
 			}, 0 );
 		} );
 
-		// La fila de edición masiva se reconstruye al aplicarla: se vuelve a
-		// construir la UI si aparece algún checklist sin su contenedor.
+		// The Bulk Edit row is rebuilt when applied: rebuild the UI if a checklist
+		// appears without its wrapper.
 		$( document ).on( 'click', '#doaction, #doaction2', function() {
 			setTimeout( buildAll, 0 );
 		} );
 
-		// Al abrir la edición rápida, la fila inline se inserta en la tabla.
+		// When Quick Edit opens, the inline row is inserted into the table.
 		$( document ).on( 'click', '.editinline', function() {
 			setTimeout( buildAll, 0 );
 		} );

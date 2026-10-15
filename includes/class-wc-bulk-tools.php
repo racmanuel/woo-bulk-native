@@ -1,6 +1,6 @@
 <?php
 /**
- * Clase principal del plugin. Carga dependencias y centraliza los hooks.
+ * Main plugin class. Loads dependencies and centralizes hooks.
  *
  * @package WC_Bulk_Tools
  */
@@ -10,19 +10,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Orquestador del plugin.
+ * Plugin orchestrator.
  */
 final class WC_Bulk_Tools {
 
 	/**
-	 * Instancia única.
+	 * Singleton instance.
 	 *
 	 * @var WC_Bulk_Tools|null
 	 */
 	protected static $instance = null;
 
 	/**
-	 * Devuelve la instancia única.
+	 * Returns the singleton instance.
 	 *
 	 * @return WC_Bulk_Tools
 	 */
@@ -35,7 +35,7 @@ final class WC_Bulk_Tools {
 	}
 
 	/**
-	 * Constructor privado.
+	 * Private constructor.
 	 */
 	private function __construct() {
 		$this->load_dependencies();
@@ -43,7 +43,7 @@ final class WC_Bulk_Tools {
 	}
 
 	/**
-	 * Carga las clases de las funcionalidades del plugin.
+	 * Loads the plugin feature classes.
 	 *
 	 * @return void
 	 */
@@ -53,7 +53,7 @@ final class WC_Bulk_Tools {
 	}
 
 	/**
-	 * Registra los hooks globales del plugin.
+	 * Registers the plugin's global hooks.
 	 *
 	 * @return void
 	 */
@@ -63,7 +63,7 @@ final class WC_Bulk_Tools {
 	}
 
 	/**
-	 * Carga el textdomain del plugin.
+	 * Loads the plugin text domain.
 	 *
 	 * @return void
 	 */
@@ -72,7 +72,7 @@ final class WC_Bulk_Tools {
 	}
 
 	/**
-	 * Inicializa las funcionalidades si WooCommerce está activo.
+	 * Initializes the features if WooCommerce is active.
 	 *
 	 * @return void
 	 */
@@ -87,7 +87,7 @@ final class WC_Bulk_Tools {
 	}
 
 	/**
-	 * Indica si WooCommerce está activo.
+	 * Checks whether WooCommerce is active.
 	 *
 	 * @return bool
 	 */
@@ -96,7 +96,7 @@ final class WC_Bulk_Tools {
 	}
 
 	/**
-	 * Muestra un aviso si WooCommerce no está activo.
+	 * Displays a notice if WooCommerce is not active.
 	 *
 	 * @return void
 	 */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Limpiador de la categoría por defecto de WooCommerce en productos simples.
+ * WooCommerce default category cleaner for simple products.
  *
  * @package WC_Bulk_Tools
  */
@@ -10,40 +10,40 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Elimina la categoría por defecto de los productos simples que además
- * tienen asignadas otras categorías.
+ * Removes the default category from simple products that also have
+ * other categories assigned.
  */
 final class WC_Bulk_Tools_Category_Cleaner {
 
 	/**
-	 * Acción del nonce.
+	 * Nonce action.
 	 */
 	const NONCE_ACTION = 'wcbt_cleaner_nonce';
 
 	/**
-	 * Clave del transient que guarda los IDs limpiables.
+	 * Transient key storing cleanable IDs.
 	 */
 	const TRANSIENT_KEY = 'wcbt_cleanable_ids';
 
 	/**
-	 * Slug de la página admin.
+	 * Admin page slug.
 	 */
 	const MENU_SLUG = 'wc-default-cat-cleaner';
 
 	/**
-	 * Productos procesados por lote.
+	 * Products processed per batch.
 	 */
 	const BATCH_SIZE = 50;
 
 	/**
-	 * Instancia única.
+	 * Singleton instance.
 	 *
 	 * @var WC_Bulk_Tools_Category_Cleaner|null
 	 */
 	protected static $instance = null;
 
 	/**
-	 * Devuelve la instancia única.
+	 * Returns the singleton instance.
 	 *
 	 * @return WC_Bulk_Tools_Category_Cleaner
 	 */
@@ -56,12 +56,12 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * Constructor privado.
+	 * Private constructor.
 	 */
 	private function __construct() {}
 
 	/**
-	 * Registra los hooks de la funcionalidad.
+	 * Registers the feature hooks.
 	 *
 	 * @return void
 	 */
@@ -74,7 +74,7 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * Registra la página admin bajo el menú de Productos.
+	 * Registers the admin page under the Products menu.
 	 *
 	 * @return void
 	 */
@@ -90,7 +90,7 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * Renderiza la página admin del limpiador.
+	 * Renders the cleaner admin page.
 	 *
 	 * @return void
 	 */
@@ -209,9 +209,9 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * Agrega un botón de acceso en el listado de productos.
+	 * Adds an access button to the product list.
 	 *
-	 * @param string $which Posición de la barra ('top' o 'bottom').
+	 * @param string $which Toolbar position ('top' or 'bottom').
 	 * @return void
 	 */
 	public function add_cleaner_button( $which ) {
@@ -234,9 +234,9 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * Encola scripts y estilos solo en la página del limpiador.
+	 * Enqueues scripts and styles only on the cleaner page.
 	 *
-	 * @param string $hook_suffix Hook de la pantalla actual.
+	 * @param string $hook_suffix Current screen hook suffix.
 	 * @return void
 	 */
 	public function enqueue_admin_scripts( $hook_suffix ) {
@@ -279,11 +279,11 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * AJAX: simula la limpieza (solo cuenta, no modifica nada).
+	 * AJAX: simulates the cleanup (counts only, makes no changes).
 	 *
-	 * Guarda los IDs limpiables en un transient para que el procesamiento por
-	 * lotes los recorra por índice y evite el desfase de offset que ocurriría
-	 * al volver a consultar la base de datos tras eliminar términos.
+	 * Stores cleanable IDs in a transient so batch processing can iterate over
+	 * them by index and avoid the offset drift that would occur when querying
+	 * the database again after removing terms.
 	 *
 	 * @return void
 	 */
@@ -326,7 +326,7 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * AJAX: procesa un lote de productos leyendo los IDs del transient por índice.
+	 * AJAX: processes a product batch by reading transient IDs by index.
 	 *
 	 * @return void
 	 */
@@ -397,7 +397,7 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * Respuesta estándar cuando no queda nada por procesar.
+	 * Standard response when there is nothing left to process.
 	 *
 	 * @return array
 	 */
@@ -411,7 +411,7 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * Comprueba permisos y nonce en las peticiones AJAX.
+	 * Checks permissions and the nonce on AJAX requests.
 	 *
 	 * @return void
 	 */
@@ -428,7 +428,7 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * Devuelve el ID de la categoría por defecto de productos.
+	 * Returns the default product category ID.
 	 *
 	 * @return int
 	 */
@@ -437,11 +437,11 @@ final class WC_Bulk_Tools_Category_Cleaner {
 	}
 
 	/**
-	 * Obtiene los IDs de productos simples que tienen la categoría por defecto.
+	 * Gets the IDs of simple products that have the default category.
 	 *
-	 * @param int $default_cat_id ID de la categoría por defecto.
-	 * @param int $limit          Máximo de productos a obtener (-1 = todos).
-	 * @return int[] Lista de IDs de productos.
+	 * @param int $default_cat_id Default category ID.
+	 * @param int $limit          Maximum number of products to retrieve (-1 = all).
+	 * @return int[] Product ID list.
 	 */
 	private function get_simple_products_with_default_cat( $default_cat_id, $limit = -1 ) {
 		$products = wc_get_products(

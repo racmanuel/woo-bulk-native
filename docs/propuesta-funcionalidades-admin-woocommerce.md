@@ -2,12 +2,13 @@
 
 ## Resumen
 
-Esta propuesta plantea mejorar la búsqueda y el filtrado dentro de la administración de productos de WooCommerce:
+Esta propuesta plantea mejorar dos flujos de administración dentro de WooCommerce:
 
 1. Añadir búsqueda a los checklists de categorías, marcas, etiquetas y otras taxonomías.
 2. Añadir búsqueda a la lista de productos seleccionados para la edición masiva.
+3. Añadir una herramienta para limpiar la categoría por defecto de WooCommerce.
 
-Ambas funciones mejorarían la administración diaria de catálogos grandes sin modificar datos de productos ni cambiar los flujos existentes de edición.
+Estas funciones mejorarían la administración diaria de catálogos grandes y permitirían corregir asignaciones de categorías de forma controlada.
 
 ## Problema
 
@@ -30,6 +31,12 @@ Esto afecta especialmente a:
 La edición masiva muestra los productos seleccionados en una lista propia. Cuando se seleccionan muchos productos, revisar esa lista o confirmar si un producto concreto forma parte de la selección requiere desplazarse manualmente.
 
 La lista debería permitir filtrar los productos seleccionados por nombre sin cambiar la selección real ni interferir con los controles nativos para eliminar productos.
+
+### Categoría por defecto de WooCommerce
+
+WooCommerce asigna una categoría por defecto a los productos. Con el tiempo, esa categoría puede permanecer asignada junto con categorías más específicas, aunque ya no sea necesaria para esos productos.
+
+La limpieza manual de esta categoría requiere revisar productos individualmente y comprobar que cada producto conserve al menos otra categoría. El administrador necesita una herramienta que permita simular la operación antes de modificar datos y procesar los productos de forma controlada.
 
 ## Funcionalidades propuestas
 
@@ -67,6 +74,24 @@ La búsqueda debería:
 
 Este filtro debe ser local y no necesita realizar peticiones AJAX ni consultar nuevamente todo el catálogo.
 
+### 3. Limpiador de la categoría por defecto
+
+Añadir una herramienta bajo la sección de productos que permita eliminar la categoría por defecto de WooCommerce de los productos simples que también tengan asignadas otras categorías.
+
+La herramienta debería:
+
+- Detectar y mostrar la categoría por defecto configurada en WooCommerce.
+- Simular la operación antes de realizar cambios.
+- Informar cuántos productos tienen la categoría por defecto.
+- Informar cuántos productos se pueden limpiar y cuántos se conservarán sin cambios.
+- Procesar los productos limpiables en lotes.
+- Mostrar el progreso y los resultados del procesamiento.
+- Omitir productos que no tengan otra categoría asignada.
+- Nunca dejar un producto sin categoría.
+- Requerir permisos de administración de WooCommerce y una confirmación explícita.
+
+El procesamiento debe invalidar las cachés de términos afectadas y gestionar correctamente los errores de cada lote.
+
 ## Por qué estas funciones deberían formar parte del core de WooCommerce
 
 ### Flujo habitual de administración
@@ -83,7 +108,11 @@ Una implementación nativa ofrecería el mismo comportamiento en las tiendas Woo
 
 ### Bajo riesgo de implementación
 
-Estas mejoras se limitan a la interfaz de administración. No requieren cambios en el almacenamiento de productos, el checkout, los pedidos ni las plantillas públicas.
+Estas mejoras se limitan a la interfaz y a tareas controladas de administración. No requieren cambios en el checkout, los pedidos ni las plantillas públicas.
+
+### Mantenimiento seguro del catálogo
+
+El limpiador evita una operación destructiva sin revisión previa mediante una simulación, una confirmación y un procesamiento por lotes. La regla de conservar productos que no tengan categorías adicionales reduce el riesgo de dejar productos sin clasificación.
 
 ### Compatibilidad con extensiones
 
@@ -109,12 +138,24 @@ La búsqueda puede operar sobre los elementos que ya están presentes en el DOM.
 5. La selección real permanece intacta.
 6. Al limpiar la búsqueda, vuelven a mostrarse todos los productos seleccionados.
 
+### Limpiador de la categoría por defecto
+
+1. El administrador abre la herramienta desde el menú de productos.
+2. La pantalla muestra la categoría por defecto detectada.
+3. El administrador ejecuta una simulación.
+4. La pantalla muestra los productos encontrados, los limpiables y los que se conservarán sin cambios.
+5. El administrador confirma la operación.
+6. La herramienta procesa los productos limpiables por lotes y muestra el progreso.
+7. Al finalizar, muestra los totales procesados, modificados y omitidos.
+
 ## Requisitos de accesibilidad
 
 - Cada campo de búsqueda debe tener una etiqueta accesible.
 - Los botones para limpiar la búsqueda deben poder utilizarse con teclado.
 - Los estados “Sin resultados” deben comunicarse mediante un mensaje de estado apropiado.
 - El foco debe mantenerse predecible al limpiar un filtro.
+- La simulación y la confirmación del limpiador deben explicar claramente qué cambios se realizarán.
+- El progreso y el resultado final del limpiador deben comunicarse de forma comprensible.
 - La interfaz no debe depender únicamente del color para comunicar resultados.
 - Todos los textos deben poder traducirse.
 
@@ -126,6 +167,9 @@ La búsqueda puede operar sobre los elementos que ya están presentes en el DOM.
 - No se deben modificar datos de productos durante la búsqueda.
 - Deben conservarse los permisos y controles de seguridad nativos de WooCommerce.
 - Los eventos deben funcionar aunque WordPress reconstruya dinámicamente las filas de edición.
+- Las acciones del limpiador deben protegerse con capacidades y nonce de WordPress.
+- El limpiador debe procesar los cambios en lotes para limitar el uso de memoria y tiempo de ejecución.
+- La categoría por defecto solo debe eliminarse cuando el producto conserve al menos otra categoría.
 
 ## Alcance
 
@@ -134,8 +178,10 @@ Esta propuesta incluye:
 - Búsqueda de taxonomías en edición rápida.
 - Búsqueda de taxonomías en edición masiva.
 - Búsqueda dentro de los productos seleccionados para edición masiva.
+- Limpieza controlada de la categoría por defecto de WooCommerce.
 - Compatibilidad con taxonomías jerárquicas, no jerárquicas y personalizadas.
 - Estados vacíos, limpieza del filtro, accesibilidad y traducciones.
+- Simulación, confirmación, procesamiento por lotes y resultados del limpiador.
 
 ## Evidencia del prototipo
 
@@ -147,6 +193,8 @@ Existe un prototipo funcional implementado como plugin independiente para la adm
 - Estados vacíos cuando una búsqueda no produce coincidencias.
 - Limpieza del filtro sin cambiar los valores seleccionados.
 - Eventos delegados que siguen funcionando cuando WordPress reconstruye las filas.
+- Simulación y limpieza por lotes de la categoría por defecto en productos simples.
+- Protección para conservar productos que tienen únicamente la categoría por defecto.
 
 El prototipo puede servir como punto de partida para revisar la interacción y analizar los casos límite antes de seleccionar la implementación definitiva en WooCommerce.
 
@@ -164,6 +212,9 @@ El prototipo puede servir como punto de partida para revisar la interacción y a
 > **Captura 4: Estado vacío y limpieza del filtro**  
 > Reemplaza este bloque con una imagen del mensaje sin resultados y de la lista restaurada después de limpiar la búsqueda.
 
+> **Captura 5: Simulación y progreso del limpiador**
+> Reemplaza este bloque con una imagen de la categoría detectada, el resultado de la simulación y el progreso del procesamiento por lotes.
+
 ## Criterios de aceptación
 
 - Los checklists de taxonomías tienen un campo de búsqueda en edición rápida y masiva.
@@ -176,6 +227,12 @@ El prototipo puede servir como punto de partida para revisar la interacción y a
 - Filtrar productos seleccionados no elimina ni modifica ninguna selección real.
 - Los botones nativos para eliminar productos siguen funcionando.
 - Los filtros siguen funcionando después de que WordPress cree o reemplace una fila de edición.
+- El limpiador detecta la categoría por defecto configurada en WooCommerce.
+- La simulación diferencia los productos limpiables de los que se conservarán sin cambios.
+- Solo se procesan productos simples con la categoría por defecto y al menos otra categoría.
+- El limpiador procesa los productos por lotes y muestra el progreso y los resultados finales.
+- La operación requiere permisos adecuados, nonce y confirmación explícita.
+- Ningún producto queda sin categoría como resultado de la limpieza.
 - La interfaz es accesible mediante teclado y completamente traducible.
 - La implementación no añade consultas sobre todo el catálogo durante el uso normal.
 
@@ -186,9 +243,11 @@ El prototipo puede servir como punto de partida para revisar la interacción y a
 3. ¿Qué comportamiento jerárquico consideran más adecuado cuando coincide un término padre o un término hijo?
 4. ¿Debería la búsqueda de productos seleccionados filtrar únicamente por nombre o también por SKU?
 5. ¿Existe algún evento o API recomendada para integrarse con extensiones que reconstruyen los checklists?
+6. ¿Debería el limpiador ofrecer una opción para seleccionar una categoría de destino antes de eliminar la categoría por defecto?
+7. ¿Debería existir una opción para revisar o exportar la lista de productos que se conservarán sin cambios?
 
 ## Conclusión
 
-La búsqueda en taxonomías y en productos seleccionados son mejoras pequeñas y concretas que harían la administración de catálogos grandes más clara y eficiente. Mantienen el comportamiento actual, no requieren cambios en el frontend y no modifican datos durante la búsqueda.
+La búsqueda en taxonomías, la búsqueda de productos seleccionados y la limpieza controlada de la categoría por defecto son mejoras concretas para administrar catálogos WooCommerce grandes. Las búsquedas no modifican datos y el limpiador aplica cambios únicamente después de una simulación, confirmación y validación de categorías adicionales.
 
 El prototipo independiente puede servir como punto de partida para revisar la interacción y determinar la implementación nativa más adecuada para WooCommerce.
