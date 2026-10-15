@@ -8,70 +8,66 @@ Stable tag: 1.0.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Herramientas nativas para WooCommerce: buscador en los checklists de taxonomías de la edición rápida/masiva y limpiador de la categoría por defecto.
+Native WooCommerce tools: taxonomy checklist search for Quick Edit and Bulk Edit, plus a default category cleaner.
 
 == Description ==
 
-Este plugin reúne en una sola extensión dos utilidades para el catálogo de WooCommerce.
+This plugin combines two utilities for the WooCommerce product catalog in a single extension.
 
-**1. Buscador en la edición rápida y masiva**
+**1. Quick Edit and Bulk Edit search**
 
-Añade un campo de búsqueda sobre los checklists jerárquicos de taxonomías
-(categorías, marcas, etiquetas y cualquier taxonomía registrada) que WooCommerce
-muestra en la edición rápida y en la edición masiva de productos.
+Adds a search field above the hierarchical taxonomy checklists
+(categories, brands, tags, and any registered taxonomy) displayed by WooCommerce
+in Quick Edit and Bulk Edit for products.
 
-* Filtra por texto en tiempo real (con debounce) sobre la lista de términos.
-* Conserva visibles los términos padre e hijo relacionados con la coincidencia.
-* Muestra el contador de resultados y un botón para limpiar la búsqueda.
-* Funciona con checklists anidados de cualquier profundidad.
+* Filters terms by text in real time with debounce.
+* Keeps parent and child terms related to the match visible.
+* Displays the result count and a button to clear the search.
+* Works with nested checklists of any depth.
 
-**2. Limpiador de la categoría por defecto**
+**2. Default category cleaner**
 
-Añade una herramienta bajo *Productos → Limpiar categoría por defecto* que
-elimina la categoría por defecto de WooCommerce de los productos simples que,
-además, tienen asignadas otras categorías.
+Adds a tool under *Products → Clean Default Category* that removes the default
+WooCommerce category from simple products that also have other categories assigned.
 
-* Primero simula el proceso: indica cuántos productos se pueden limpiar y
-  cuántos se conservarán sin cambios.
-* Después ejecuta la limpieza por lotes con barra de progreso.
-* Nunca deja un producto sin categoría: solo actúa cuando existen otras
-  categorías adicionales.
-* Añade un acceso directo en la barra superior del listado de productos.
+* Simulates the process first, showing how many products can be cleaned and how many will remain unchanged.
+* Executes the cleanup in batches with a progress bar.
+* Never leaves a product without a category: it only acts when additional categories exist.
+* Adds a shortcut to the top toolbar of the product list.
 
 == Installation ==
 
-1. Sube la carpeta del plugin a `/wp-content/plugins/` o instálalo desde el
-   repositorio de plugins de WordPress.
-2. Activa el plugin desde el menú *Plugins*.
-3. Asegúrate de que WooCommerce está instalado y activo.
+1. Upload the plugin folder to `/wp-content/plugins/` or install it from the
+  WordPress plugin repository.
+2. Activate the plugin from the *Plugins* menu.
+3. Make sure WooCommerce is installed and active.
 
 == Frequently Asked Questions ==
 
-= ¿Modifica productos que solo tienen la categoría por defecto? =
+= Does it modify products that only have the default category? =
 
-No. Solo se limpian los productos simples que tienen la categoría por defecto
-junto con al menos otra categoría adicional.
+No. Only simple products that have the default category together with at least
+one additional category are cleaned.
 
-= ¿Qué tipos de producto se procesan? =
+= Which product types are processed? =
 
-Únicamente productos de tipo `simple`.
+Only products of type `simple`.
 
-= ¿Puedo deshacer la limpieza? =
+= Can I undo the cleanup? =
 
-No automáticamente. Se recomienda hacer una copia de seguridad de la base de
-datos antes de ejecutar la limpieza.
+Not automatically. It is recommended to back up the database before running the
+cleanup.
 
 == Changelog ==
 
 = 1.0.2 =
-* Añadido un buscador local para filtrar los productos seleccionados en la
-  edición masiva sin modificar la selección nativa de WordPress.
+* Added local search to filter selected products during Bulk Edit without changing
+  the native WordPress selection.
 
 = 1.0.1 =
-* Corregido el buscador en la edición rápida y masiva: ahora los manejadores de
-  eventos están delegados, de modo que siguen funcionando cuando WordPress y
-  WooCommerce clonan filas completas del listado de productos.
+* Fixed Quick Edit and Bulk Edit search by delegating event handlers so they
+  continue working when WordPress and WooCommerce clone complete product-list rows.
 
 = 1.0.0 =
-* Versión inicial unificada. Integra el buscador de taxonomías en la edición
-  rápida/masiva y el limpiador de la categoría por defecto.
+* Initial unified release. Includes taxonomy search in Quick Edit and Bulk Edit,
+  plus the default category cleaner.
